@@ -47,6 +47,16 @@ exports.signin = (req, res, next) => {
     })(req, res, next);
 };
 
-exports.signout = () => {};
+exports.signout = (req, res) => {
+    res.clearCookie('next-connect.sid');
+    req.logout();
+    res.json({ message: 'You are signed out' });
+};
 
-exports.checkAuth = () => {};
+exports.checkAuth = (req, res) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
+    res.redirect('/signin');
+};
