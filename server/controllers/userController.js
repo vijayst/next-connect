@@ -6,7 +6,12 @@ exports.getUsers = async (req, res) => {
     res.json(users);
 };
 
-exports.getAuthUser = () => {};
+exports.getAuthUser = async (req, res) => {
+    if (!req.isAuthUser) {
+        return res.status(403).json({ message: 'Unauthorized' });
+    }
+    res.json(req.user);
+};
 
 exports.getUserById = async (req, res, next, id) => {
     const user = await User.findOne({ _id: id });
