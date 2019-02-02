@@ -22,7 +22,12 @@ exports.getUserById = async (req, res, next, id) => {
     next();
 };
 
-exports.getUserProfile = () => {};
+exports.getUserProfile = async (req, res) => {
+    if (!req.profile) {
+        return res.status(404).json({ message: 'Not found '});
+    }
+    res.json(req.profile);
+};
 
 exports.getUserFeed = () => {};
 
