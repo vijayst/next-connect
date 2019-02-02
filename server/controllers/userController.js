@@ -8,7 +8,14 @@ exports.getUsers = async (req, res) => {
 
 exports.getAuthUser = () => {};
 
-exports.getUserById = () => {};
+exports.getUserById = async (req, res, next, id) => {
+    const user = await User.findOne({ _id: id });
+    req.profile = user;
+    if (user && req.user && mongoose.Types.ObjectId(user._id).equals(req.user._id)) {
+        req.isAuthUser = true;
+    }
+    next();
+};
 
 exports.getUserProfile = () => {};
 
@@ -20,7 +27,13 @@ exports.resizeAvatar = () => {};
 
 exports.updateUser = () => {};
 
-exports.deleteUser = () => {};
+exports.deleteUser = async (req, res) => {
+    if (!req.isAuthUser) {
+        return res.status(400).json({ message: 'You are not authorized' });
+    }
+    const user = await User.findOneAndDelete({ _id: req.params.userId });
+    res.json(user);
+};
 
 exports.addFollowing = () => {};
 

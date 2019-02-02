@@ -53,7 +53,7 @@ exports.signout = (req, res) => {
     res.json({ message: 'You are signed out' });
 };
 
-exports.checkAuth = (req, res) => {
+exports.checkAuth = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
