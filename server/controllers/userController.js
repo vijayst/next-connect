@@ -35,7 +35,12 @@ exports.getUserProfile = async (req, res) => {
     res.json(req.profile);
 };
 
-exports.getUserFeed = () => {};
+exports.getUserFeed = async (req, res) => {
+    const { following, id } = req.profile;
+    following.push(id);
+    const users = await User.find({ _id: { $nin: following }});
+    res.json(users);
+};
 
 exports.uploadAvatar = () => {};
 
