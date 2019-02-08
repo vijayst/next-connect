@@ -33,10 +33,10 @@ exports.signup = async (req, res) => {
 exports.signin = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
-            res.status(500).json(err.message);
+            return res.status(500).json(err.message);
         }
         if (!user) {
-            res.status(400).json(info.message);
+            return res.status(400).json(info.message);
         }
         req.logIn(user, err => {
             if (err) {
