@@ -62,13 +62,13 @@ exports.uploadAvatar = multer(multerConfig).single('avatar');
 
 exports.resizeAvatar = async (req, res, next) => {
     if (!req.file) {
-        next();
+        return next();
     }
     const extn = req.file.mimetype.split('/')[1];
     req.body.avatar = `/static/uploads/avatar/${req.user.name}.${extn}`;
     const image = await jimp.read(req.file.buffer);
-    image.resize(250, jimp.AUTO);
-    image.write('.' + req.body.avatar);
+    await image.resize(250, jimp.AUTO);
+    await image.write('.' + req.body.avatar);
     next();
 };
 
