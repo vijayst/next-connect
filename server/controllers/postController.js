@@ -46,15 +46,18 @@ exports.deletePost = () => {};
 exports.getPostById = () => {};
 
 exports.getPostsByUser = async (req, res) => {
-    const posts = await Post.find({ postedBy: req.profile._id })
-    .sort({ createdAt: 'desc' });
+    const posts = await Post.find({ postedBy: req.profile._id }).sort({
+        createdAt: 'desc'
+    });
     res.json(posts);
 };
 
 exports.getPostFeed = async (req, res) => {
     const { following, _id } = req.profile;
     following.push(_id);
-    const posts = await Post.find({ postedBy: { $in: following }}).sort({ createdAt: 'desc' });
+    const posts = await Post.find({ postedBy: { $in: following } }).sort({
+        createdAt: 'desc'
+    });
     res.json(posts);
 };
 
@@ -70,4 +73,29 @@ exports.toggleLike = async (req, res) => {
     res.json(post);
 };
 
-exports.toggleComment = () => {};
+exports.comment = async (req, res) => {
+    const { postId, comment } = req.body;
+    const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $push: { comments: { text: comment.text, postedBy: req.user._id } } },
+        { new: true }
+    )
+        .populate('postedBy', '_id name avatar')
+        .populate('comments.postedBy', '_id name avatar');
+    res.json(post);
+};
+
+exports.uncomment = async (req, res) => {
+    const {
+        postId,
+        comment: { _id: commentId }
+    } = req.body;
+    const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $pull: { comments: { _id: commentId } } },
+        { new: true }
+    )
+        .populate('postedBy', '_id name avatar')
+        .populate('comments.postedBy', '_id name avatar');
+    res.json(post);
+};

@@ -85,12 +85,12 @@ router.put(
 router.put(
   "/api/posts/comment",
   authController.checkAuth,
-  catchErrors(postController.toggleComment)
+  catchErrors(postController.comment)
 );
 router.put(
   "/api/posts/uncomment",
   authController.checkAuth,
-  catchErrors(postController.toggleComment)
+  catchErrors(postController.uncomment)
 );
 
 router.delete(
