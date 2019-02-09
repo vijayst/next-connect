@@ -51,7 +51,12 @@ exports.getPostsByUser = async (req, res) => {
     res.json(posts);
 };
 
-exports.getPostFeed = () => {};
+exports.getPostFeed = async (req, res) => {
+    const { following, _id } = req.profile;
+    following.push(_id);
+    const posts = await Post.find({ postedBy: { $in: following }}).sort({ createdAt: 'desc' });
+    res.json(posts);
+};
 
 exports.toggleLike = () => {};
 
