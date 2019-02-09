@@ -45,7 +45,11 @@ exports.deletePost = () => {};
 
 exports.getPostById = () => {};
 
-exports.getPostsByUser = () => {};
+exports.getPostsByUser = async (req, res) => {
+    const posts = await Post.find({ postedBy: req.profile._id })
+    .sort({ createdAt: 'desc' });
+    res.json(posts);
+};
 
 exports.getPostFeed = () => {};
 
