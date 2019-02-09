@@ -41,9 +41,22 @@ exports.addPost = async (req, res) => {
     res.json(post);
 };
 
-exports.deletePost = () => {};
+exports.deletePost = async (req, res) => {
+    if (!req.poster) {
+        res.status(403).json({ message: 'Not authorized' });
+    }
+    const post = await Post.findOneAndDelete({ _id: req.post._id });
+    res.json(post);
+};
 
-exports.getPostById = () => {};
+exports.getPostById = async (req, res, next, id) => {
+    const post = await Post.findOne({ _id: id });
+    req.post = post;
+    if (req.post.postedBy._id.equals(req.user._id)) {
+        req.poster = true;
+    }
+    next();
+};
 
 exports.getPostsByUser = async (req, res) => {
     const posts = await Post.find({ postedBy: req.profile._id }).sort({
