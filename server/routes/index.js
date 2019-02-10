@@ -48,7 +48,7 @@ router
   .put(
     authController.checkAuth,
     userController.uploadAvatar,
-    catchErrors(userController.resizeAvatar),
+    userController.resizeAvatar,
     catchErrors(userController.updateUser)
   )
   .delete(authController.checkAuth, catchErrors(userController.deleteUser));

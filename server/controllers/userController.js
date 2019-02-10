@@ -47,20 +47,23 @@ exports.getUserFeed = async (req, res) => {
 const multerConfig = {
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 1024 * 1024
+        fileSize: 1024
     },
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
-            cb(null, false);
+            cb({ message: 'Not an image' });
         }
     }
 };
 
 exports.uploadAvatar = multer(multerConfig).single('avatar');
 
-exports.resizeAvatar = async (req, res, next) => {
+exports.resizeAvatar = async (err, req, res, next) => {
+    if (err) {
+        return res.status(500).send({ message: err.message });
+    }
     if (!req.file) {
         return next();
     }
